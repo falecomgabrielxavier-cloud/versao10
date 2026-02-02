@@ -1,0 +1,813 @@
+
+// FIX: Import React and ReactDOM to use them as modules.
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+
+// --- From types.ts ---
+interface Service {
+    icon: string;
+    title: string;
+    description: string;
+}
+
+interface Specification {
+    icon: string;
+    label: string;
+    value: string;
+}
+
+interface FAQ {
+    question: string;
+    answer: string;
+}
+
+interface Feature {
+    icon: string;
+    title: string;
+    description: string;
+}
+
+declare global {
+    interface Window {
+        lucide: {
+            createIcons: () => void;
+        };
+    }
+}
+
+
+// --- From constants.ts ---
+const WHATSAPP_LINK = "https://api.whatsapp.com/send?phone=5582988686723&text=Ol%C3%A1%2C%20vi%20o%20an%C3%BAncio%20do%20guindaste%20e%20gostaria%20de%20um%20or%C3%A7amento.";
+const INSTAGRAM_LINK = "https://www.instagram.com/emilianoguindaste/";
+
+const NAV_LINKS = [
+    { href: '#servicos', label: 'Serviços' },
+    { href: '#diferenciais', label: 'Diferenciais' },
+    { href: '#galeria', label: 'Galeria' },
+    { href: '#faq', label: 'Perguntas Frequentes' },
+    { href: '#contato', label: 'Contato' },
+];
+
+const SERVICES: Service[] = [
+    {
+        icon: 'hard-hat',
+        title: 'Construção Civil',
+        description: 'Içamento de lajes, vigas, materiais de construção e montagem de pré-moldados.'
+    },
+    {
+        icon: 'factory',
+        title: 'Montagens Industriais',
+        description: 'Movimentação de maquinário pesado, tanques e montagem de estruturas metálicas.'
+    },
+    {
+        icon: 'truck',
+        title: 'Carga e Descarga',
+        description: 'Manuseio de containers, geradores, transformadores e outros equipamentos pesados.'
+    },
+    {
+        icon: 'package',
+        title: 'Eventos e Instalações',
+        description: 'Montagem de estruturas para eventos, instalação de painéis e equipamentos de grande porte.'
+    }
+];
+
+const SPECIFICATIONS: Specification[] = [
+    { icon: 'tag', label: 'Tipo', value: 'Guindaste Madal' },
+    { icon: 'anchor', label: 'Capacidade Máxima', value: '25 Toneladas' },
+    { icon: 'move-vertical', label: 'Lança Principal', value: '24 Metros' },
+    { icon: 'arrow-up-right-square', label: 'Altura Máx. (c/ Jib)', value: '33 Metros' },
+];
+
+const GALLERY_IMAGES: string[] = [
+    "https://i.imgur.com/vxQcFUR.jpeg",
+    "https://i.imgur.com/GOhPTJz.png",
+    "https://i.imgur.com/ldj9D35.jpeg",
+    "https://i.imgur.com/ElnTsrN.png",
+    "https://i.imgur.com/KOLrze5.png",
+    "https://i.imgur.com/n3rg8dE.png",
+    "https://i.imgur.com/2mLicsy.png"
+];
+
+const FAQ_DATA: FAQ[] = [
+    {
+        question: 'Qual a capacidade de carga do guindaste?',
+        answer: 'Nosso guindaste Madal MD 25 possui capacidade máxima de 25 toneladas, com lança principal de 24 metros e altura máxima de 33 metros com jib estendido.'
+    },
+    {
+        question: 'Como funciona o processo de locação?',
+        answer: 'É simples! Entre em contato pelo WhatsApp, informe os detalhes do seu projeto (tipo de carga, local, data), e enviaremos um orçamento personalizado. Após aprovação, agendaremos o serviço.'
+    },
+    {
+        question: 'Vocês atendem em toda Maceió?',
+        answer: 'Sim! Atendemos em toda Maceió e região metropolitana. Para locais mais distantes, entre em contato para verificarmos a viabilidade.'
+    },
+    {
+        question: 'O serviço inclui operador?',
+        answer: 'Sim, todos os nossos serviços incluem operador qualificado e certificado para garantir a segurança e eficiência da operação.'
+    },
+    {
+        question: 'Qual o prazo para agendamento?',
+        answer: 'Trabalhamos com agendamento flexível. Dependendo da disponibilidade, podemos atender em até 24-48 horas. Entre em contato para verificar a agenda.'
+    }
+];
+
+const FEATURES: Feature[] = [
+    {
+        icon: 'shield',
+        title: 'Serviço Confiável',
+        description: 'Segurança e eficiência'
+    },
+    {
+        icon: 'award',
+        title: 'Experiência',
+        description: 'Anos de mercado'
+    },
+    {
+        icon: 'user-check',
+        title: 'Operador Incluso',
+        description: 'Profissional qualificado'
+    },
+    {
+        icon: 'map-pin',
+        title: 'Localização',
+        description: 'Maceió e região'
+    }
+];
+
+
+// --- From components/Icons.tsx ---
+interface IconProps {
+    className?: string;
+}
+
+const WhatsAppIcon: React.FC<IconProps> = ({ className }) => (
+    <svg className={className} fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.06 21.94L7.32 20.59C8.77 21.33 10.37 21.8 12.04 21.8C17.5 21.8 21.95 17.35 21.95 11.91C21.95 6.45 17.5 2 12.04 2M12.04 20.13C10.59 20.13 9.17 19.74 7.96 19L7.61 18.78L4.4 19.65L5.3 16.51L5.06 16.14C4.22 14.86 3.8 13.41 3.8 11.91C3.8 7.39 7.47 3.72 12.04 3.72C16.61 3.72 20.28 7.39 20.28 11.91C20.28 16.43 16.61 20.13 12.04 20.13M17.48 14.48C17.21 14.35 16.03 13.78 15.79 13.69C15.55 13.6 15.38 13.56 15.21 13.8C15.04 14.04 14.5 14.6 14.33 14.77C14.16 14.94 13.99 14.96 13.72 14.83C13.45 14.7 12.6 14.43 11.61 13.54C10.82 12.84 10.29 12.03 10.14 11.79C9.99 11.55 10.09 11.43 10.21 11.31C10.32 11.2 10.45 11.03 10.6 10.88C10.75 10.73 10.8 10.61 10.9 10.44C11 10.27 10.95 10.12 10.88 10.04C10.81 9.96 10.27 8.61 10.04 8.04C9.81 7.47 9.58 7.53 9.4 7.53C9.23 7.53 9.06 7.51 8.89 7.51C8.72 7.51 8.45 7.59 8.22 7.83C7.99 8.07 7.36 8.65 7.36 9.77C7.36 10.89 8.25 11.98 8.38 12.15C8.51 12.32 10.25 14.9 12.78 16.01C15.31 17.12 15.31 16.76 15.68 16.72C16.05 16.68 17.07 16.07 17.29 15.46C17.51 14.85 17.51 14.61 17.48 14.48Z"/>
+    </svg>
+);
+
+const ZoomInIcon: React.FC<IconProps> = ({ className }) => (
+    <svg className={className} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="11" cy="11" r="8"></circle>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        <line x1="11" y1="8" x2="11" y2="14"></line>
+        <line x1="8" y1="11" x2="14" y2="11"></line>
+    </svg>
+);
+
+const InstagramIcon: React.FC<IconProps> = ({ className }) => (
+    <svg className={className} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+        <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+        <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+    </svg>
+);
+
+// --- From components/Lightbox.tsx ---
+interface LightboxProps {
+    imageSrc: string;
+    onClose: () => void;
+    onNext: () => void;
+    onPrev: () => void;
+}
+
+const Lightbox: React.FC<LightboxProps> = ({ imageSrc, onClose, onNext, onPrev }) => {
+    const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
+        if (e.target === e.currentTarget) {
+            onClose();
+        }
+    };
+
+    return (
+        <div 
+            id="lightbox" 
+            className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center p-4 z-50"
+            onClick={handleOverlayClick}
+        >
+            <button
+                id="lightbox-close"
+                onClick={onClose}
+                className="absolute top-4 right-4 text-white bg-gray-800 bg-opacity-50 rounded-full p-2 hover:bg-opacity-75 transition-opacity z-10"
+                aria-label="Close lightbox"
+            >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+
+            <button
+                id="lightbox-prev"
+                onClick={onPrev}
+                className="absolute left-4 sm:left-10 top-1/2 -translate-y-1/2 text-white bg-gray-800 bg-opacity-50 rounded-full p-2 hover:bg-opacity-75 transition-opacity"
+                aria-label="Previous image"
+            >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+                </svg>
+            </button>
+
+            <img
+                id="lightbox-img"
+                src={imageSrc}
+                alt="Imagem da galeria em destaque"
+                className="max-w-[90vw] max-h-[85vh] rounded-lg shadow-lg"
+            />
+
+            <button
+                id="lightbox-next"
+                onClick={onNext}
+                className="absolute right-4 sm:right-10 top-1/2 -translate-y-1/2 text-white bg-gray-800 bg-opacity-50 rounded-full p-2 hover:bg-opacity-75 transition-opacity"
+                aria-label="Next image"
+            >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                </svg>
+            </button>
+        </div>
+    );
+};
+
+
+// --- From components/FloatingWhatsAppButton.tsx ---
+const FloatingWhatsAppButton: React.FC = () => {
+    return (
+        <a href={WHATSAPP_LINK}
+           target="_blank"
+           rel="noopener noreferrer"
+           aria-label="Entre em contato pelo WhatsApp"
+           className="fixed bottom-6 right-6 bg-green-500 text-white p-4 rounded-full shadow-lg z-40 whatsapp-pulse flex items-center justify-center">
+            <WhatsAppIcon className="w-8 h-8" />
+        </a>
+    );
+};
+
+
+// --- From components/Footer.tsx ---
+const Footer: React.FC = () => {
+    const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+        e.preventDefault();
+        const href = e.currentTarget.getAttribute('href');
+        if (!href) return;
+        const targetId = href.substring(1);
+        const element = document.getElementById(targetId);
+        if (element) {
+            element.scrollIntoView({ behavior: 'smooth' });
+        }
+    };
+
+    return (
+        <footer className="bg-gray-900 text-gray-400 border-t border-gray-800 font-sans">
+            <div className="container mx-auto px-6 py-16 max-w-7xl">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+                    
+                    {/* Brand Section */}
+                    <div className="space-y-6">
+                        <div>
+                            <h3 className="text-2xl font-black text-white tracking-tight">
+                                Emiliano <span className="text-yellow-500">Guindaste</span>
+                            </h3>
+                            <p className="mt-4 text-sm leading-relaxed text-gray-400">
+                                Soluções completas em içamento de cargas e montagens industriais. Segurança, técnica e compromisso com o seu projeto em Maceió e região.
+                            </p>
+                        </div>
+                    </div>
+
+                    {/* Quick Links */}
+                    <div>
+                        <h4 className="text-white font-bold mb-6 tracking-wide text-sm uppercase border-b-2 border-yellow-500 inline-block pb-1">Navegação</h4>
+                        <nav>
+                            <ul className="space-y-3">
+                                {NAV_LINKS.map(link => (
+                                    <li key={link.href}>
+                                        <a 
+                                            href={link.href} 
+                                            onClick={handleNavClick}
+                                            className="text-sm hover:text-yellow-500 transition-colors duration-200 flex items-center gap-2 group"
+                                        >
+                                            <span className="w-1 h-1 bg-yellow-500 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></span>
+                                            {link.label}
+                                        </a>
+                                    </li>
+                                ))}
+                            </ul>
+                        </nav>
+                    </div>
+
+                    {/* Contact Info */}
+                    <div>
+                         <h4 className="text-white font-bold mb-6 tracking-wide text-sm uppercase border-b-2 border-yellow-500 inline-block pb-1">Contato</h4>
+                         <ul className="space-y-4 text-sm">
+                            <li className="flex items-start gap-3 group">
+                                <div className="p-2 bg-gray-800 rounded-lg group-hover:bg-yellow-500/10 transition-colors">
+                                    <i data-lucide="map-pin" className="w-5 h-5 text-yellow-500"></i>
+                                </div>
+                                <span className="text-gray-400 pt-1">Maceió - AL<br/>e Região Metropolitana</span>
+                            </li>
+                            <li className="flex items-center gap-3 group">
+                                <div className="p-2 bg-gray-800 rounded-lg group-hover:bg-yellow-500/10 transition-colors">
+                                    <i data-lucide="phone" className="w-5 h-5 text-yellow-500"></i>
+                                </div>
+                                <span className="text-gray-400 font-medium pt-1">(82) 98868-6723</span>
+                            </li>
+                             <li className="flex items-center gap-3 group">
+                                <div className="p-2 bg-gray-800 rounded-lg group-hover:bg-yellow-500/10 transition-colors">
+                                    <i data-lucide="clock" className="w-5 h-5 text-yellow-500"></i>
+                                </div>
+                                <span className="text-gray-400 pt-1">Seg - Sáb: 08:00 - 18:00</span>
+                            </li>
+                         </ul>
+                    </div>
+
+                    {/* CTA Section */}
+                    <div>
+                        <h4 className="text-white font-bold mb-6 tracking-wide text-sm uppercase border-b-2 border-yellow-500 inline-block pb-1">Fale Conosco</h4>
+                        <p className="text-sm text-gray-400 mb-4">Solicite um orçamento rápido através dos nossos canais:</p>
+                        <div className="flex flex-col gap-3">
+                             <a href={WHATSAPP_LINK}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="group flex items-center justify-center gap-3 w-full px-4 py-3 bg-green-600 hover:bg-green-500 text-white text-sm font-bold rounded-lg transition-all shadow-lg hover:shadow-green-900/20 transform hover:-translate-y-0.5">
+                                <WhatsAppIcon className="w-5 h-5" />
+                                <span>WhatsApp</span>
+                            </a>
+                             <a href={INSTAGRAM_LINK}
+                               target="_blank"
+                               rel="noopener noreferrer"
+                                className="group flex items-center justify-center gap-3 w-full px-4 py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white text-sm font-bold rounded-lg transition-all shadow-lg hover:shadow-purple-900/20 transform hover:-translate-y-0.5">
+                                <InstagramIcon className="w-5 h-5" />
+                                <span>Instagram</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="border-t border-gray-800 mt-16 pt-8 flex flex-col md:flex-row justify-between items-center text-xs text-gray-500">
+                    <p>&copy; {new Date().getFullYear()} Emiliano Guindaste. Todos os direitos reservados.</p>
+                </div>
+            </div>
+        </footer>
+    );
+};
+
+
+// --- From components/CTA.tsx ---
+const CTA: React.FC = () => {
+    return (
+        <section id="contato" className="bg-gray-50 py-16 md:py-24 border-t border-gray-200">
+            <div className="container mx-auto px-6 text-center max-w-4xl">
+                <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900">
+                    Precisa de um orçamento?
+                </h2>
+                <p className="mt-4 text-lg text-gray-700 max-w-2xl mx-auto text-center">
+                    Clique no botão abaixo para falar diretamente conosco pelo WhatsApp e solicitar seu orçamento de forma rápida e sem compromisso.
+                </p>
+                <div className="mt-10 flex flex-col items-center gap-4">
+                    <a href={WHATSAPP_LINK}
+                       target="_blank"
+                       rel="noopener noreferrer"
+                       className="inline-flex items-center justify-center w-full max-w-xs px-6 py-3 md:px-10 md:py-5 bg-green-500 hover:bg-green-600 text-white text-base md:text-xl font-bold rounded-lg shadow-md transition-all duration-300 transform hover:scale-105">
+                        <WhatsAppIcon className="w-6 h-6 md:w-7 md:h-7 mr-2 md:mr-3" />
+                        <span>Solicitar Orçamento</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+    );
+};
+
+
+// --- From components/FAQ.tsx ---
+interface FAQItemProps {
+    faq: FAQ;
+    id: string;
+    isOpen: boolean;
+    onToggle: () => void;
+}
+
+const FAQItem: React.FC<FAQItemProps> = ({ faq, id, isOpen, onToggle }) => {
+    const answerId = `faq-answer-${id}`;
+    const questionId = `faq-question-${id}`;
+
+    return (
+        <div className="bg-gray-800 rounded-lg shadow-md overflow-hidden">
+            <button
+                id={questionId}
+                className={`w-full flex justify-between items-center p-6 text-lg font-semibold text-left focus:outline-none transition-colors hover:bg-gray-700 ${isOpen ? 'bg-gray-700 text-yellow-500' : 'text-white'}`}
+                onClick={onToggle}
+                aria-expanded={isOpen}
+                aria-controls={answerId}
+            >
+                <span>{faq.question}</span>
+                <svg className={`w-5 h-5 text-gray-400 faq-arrow ${isOpen ? 'rotate' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+            </button>
+            <div 
+                id={answerId}
+                role="region"
+                aria-labelledby={questionId}
+                className={`px-6 pb-6 text-gray-300 text-justify transition-all duration-300 ease-in-out ${isOpen ? 'block' : 'hidden'}`}>
+                {faq.answer}
+            </div>
+        </div>
+    );
+};
+
+
+const FAQSection: React.FC = () => {
+    const [openIndex, setOpenIndex] = React.useState<number | null>(null);
+
+    const handleToggle = (index: number) => {
+        setOpenIndex(prevIndex => (prevIndex === index ? null : index));
+    };
+
+    return (
+        <section id="faq" className="bg-gray-900 py-16 md:py-24">
+            <div className="container mx-auto px-6 max-w-3xl">
+                <h2 className="text-3xl md:text-4xl font-bold text-center text-white mb-6">
+                    Perguntas Frequentes
+                </h2>
+                <p className="mb-12 text-lg text-gray-300 leading-relaxed max-w-2xl mx-auto text-center">
+                    Tire suas dúvidas sobre nossos serviços de locação de guindaste
+                </p>
+
+                <div className="space-y-4">
+                    {FAQ_DATA.map((faq, index) => (
+                        <FAQItem 
+                            key={index} 
+                            faq={faq} 
+                            id={index.toString()} 
+                            isOpen={openIndex === index}
+                            onToggle={() => handleToggle(index)}
+                        />
+                    ))}
+                </div>
+            </div>
+        </section>
+    );
+};
+
+
+// --- From components/Gallery.tsx ---
+const Gallery: React.FC = () => {
+    const [isLightboxOpen, setIsLightboxOpen] = React.useState(false);
+    const [currentImageIndex, setCurrentImageIndex] = React.useState(0);
+
+    const openLightbox = (index: number) => {
+        setCurrentImageIndex(index);
+        setIsLightboxOpen(true);
+    };
+
+    const closeLightbox = React.useCallback(() => {
+        setIsLightboxOpen(false);
+    }, []);
+
+    const showNextImage = React.useCallback(() => {
+        setCurrentImageIndex((prevIndex) => (prevIndex + 1) % GALLERY_IMAGES.length);
+    }, []);
+
+    const showPrevImage = React.useCallback(() => {
+        setCurrentImageIndex((prevIndex) => (prevIndex - 1 + GALLERY_IMAGES.length) % GALLERY_IMAGES.length);
+    }, []);
+    
+    React.useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (!isLightboxOpen) return;
+            if (e.key === 'Escape') {
+                closeLightbox();
+            } else if (e.key === 'ArrowRight') {
+                showNextImage();
+            } else if (e.key === 'ArrowLeft') {
+                showPrevImage();
+            }
+        };
+
+        document.addEventListener('keydown', handleKeyDown);
+        return () => {
+            document.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [isLightboxOpen, closeLightbox, showNextImage, showPrevImage]);
+
+    return (
+        <>
+            <section id="galeria" className="bg-white py-16 md:py-24">
+                <div className="container mx-auto px-6 max-w-7xl">
+                    <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-12">
+                        Galeria de Serviços
+                    </h2>
+                    <p className="mb-12 text-lg text-gray-700 leading-relaxed max-w-3xl mx-auto text-center">
+                        Veja nosso equipamento em ação. Projetos reais em Maceió e região.
+                    </p>
+                    
+                    <div className="relative">
+                        <div className="flex overflow-x-auto snap-x snap-mandatory gap-6 pb-4 scrollbar-hide sm:grid sm:grid-cols-2 lg:grid-cols-4 sm:gap-8">
+                            {GALLERY_IMAGES.map((src, index) => (
+                                <div 
+                                    key={index}
+                                    className="flex-none snap-start w-4/5 sm:w-auto"
+                                >
+                                    <div 
+                                        className="gallery-item group relative overflow-hidden rounded-lg shadow-lg aspect-[4/3] cursor-pointer" 
+                                        onClick={() => openLightbox(index)}
+                                        onKeyDown={(e) => e.key === 'Enter' && openLightbox(index)}
+                                        role="button"
+                                        tabIndex={0}
+                                        aria-label={`Ver imagem ${index + 1} em tela cheia`}
+                                    >
+                                        <img src={src} alt={`Serviço de guindaste ${index + 1}`} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110" />
+                                        <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-60 transition-opacity duration-300 flex items-center justify-center">
+                                            <ZoomInIcon className="w-12 h-12 text-white opacity-0 group-hover:opacity-100 transform scale-75 group-hover:scale-100 transition-all duration-300" />
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                        <div className="absolute top-0 right-0 bottom-0 w-16 bg-gradient-to-l from-white to-transparent sm:hidden pointer-events-none"></div>
+                    </div>
+                    <div className="sm:hidden text-center text-gray-500 mt-8">
+                         <i data-lucide="more-horizontal" className="h-8 w-8 mx-auto opacity-75"></i>
+                    </div>
+                </div>
+            </section>
+            
+            {isLightboxOpen && (
+                <Lightbox
+                    imageSrc={GALLERY_IMAGES[currentImageIndex]}
+                    onClose={closeLightbox}
+                    onNext={showNextImage}
+                    onPrev={showPrevImage}
+                />
+            )}
+        </>
+    );
+};
+
+
+// --- From components/Services.tsx ---
+interface ServiceCardProps {
+    service: Service;
+}
+
+const ServiceCard: React.FC<ServiceCardProps> = ({ service }) => (
+    <div className="bg-white p-6 rounded-lg shadow-lg flex flex-col items-center text-center transition-all duration-300 md:hover:scale-105 md:hover:shadow-xl border-2 border-gray-200 h-full md:hover:border-yellow-500">
+        <div className="flex-shrink-0 bg-yellow-100 p-4 rounded-full mb-4">
+            <i data-lucide={service.icon} className="h-8 w-8 text-yellow-600"></i>
+        </div>
+        <h4 className="text-xl font-bold text-gray-900 mb-2">{service.title}</h4>
+        <p className="text-gray-700">{service.description}</p>
+    </div>
+);
+
+interface SpecCardProps {
+    spec: Specification;
+}
+
+const SpecCard: React.FC<SpecCardProps> = ({ spec }) => (
+    <div className="bg-white p-6 rounded-lg shadow-lg flex flex-col items-center text-center transition-all duration-300 md:hover:scale-105 md:hover:shadow-xl border-2 border-gray-200 h-full md:hover:border-yellow-500">
+        <div className="flex-shrink-0 bg-yellow-100 p-4 rounded-full mb-4">
+            <i data-lucide={spec.icon} className="h-8 w-8 text-yellow-600"></i>
+        </div>
+        <h4 className="text-xl font-bold text-gray-900 mb-2">{spec.label}</h4>
+        <p className="text-gray-700 text-lg">{spec.value}</p>
+    </div>
+);
+
+const Services: React.FC = () => {
+    return (
+        <section id="servicos" className="bg-gray-50 py-16 md:py-24">
+            <div className="container mx-auto px-6 max-w-7xl">
+                <h2 className="text-3xl md:text-4xl font-bold text-gray-900 text-center mb-6">
+                    Nossos Serviços
+                </h2>
+                <p className="mb-12 text-lg text-gray-700 leading-relaxed max-w-3xl mx-auto text-center">
+                    Precisa de soluções para içamento e movimentação de cargas? Oferecemos locação de guindaste para serviços em obras, montagens industriais e outras necessidades. Atendemos em toda a região de Maceió, com atendimento prático e rápido.
+                </p>
+
+                <h3 className="text-2xl md:text-3xl font-bold text-gray-800 text-center mb-10">
+                    Aplicações Comuns
+                </h3>
+                <div className="relative">
+                    <div className="flex overflow-x-auto md:overflow-visible snap-x snap-mandatory gap-6 md:grid md:grid-cols-2 lg:grid-cols-4 md:gap-8 mb-4 pb-4 scrollbar-hide">
+                        {SERVICES.map((service, index) => (
+                            <div key={index} className="flex-none snap-start w-4/5 sm:w-2/3 md:w-auto">
+                                <ServiceCard service={service} />
+                            </div>
+                        ))}
+                    </div>
+                    <div className="absolute top-0 right-0 bottom-0 w-16 bg-gradient-to-l from-gray-50 to-transparent md:hidden pointer-events-none"></div>
+                </div>
+                <div className="md:hidden text-center text-gray-500 mb-12">
+                    <i data-lucide="more-horizontal" className="h-8 w-8 mx-auto opacity-75"></i>
+                </div>
+
+
+                <h3 className="text-2xl md:text-3xl font-bold text-gray-800 text-center mb-10">
+                    Especificações do Equipamento
+                </h3>
+                 <div className="relative">
+                    <div className="flex overflow-x-auto md:overflow-visible snap-x snap-mandatory gap-6 md:grid md:grid-cols-2 lg:grid-cols-4 md:gap-8 pb-4 scrollbar-hide">
+                        {SPECIFICATIONS.map((spec, index) => (
+                            <div key={index} className="flex-none snap-start w-4/5 sm:w-2/3 md:w-auto">
+                                <SpecCard spec={spec} />
+                            </div>
+                        ))}
+                    </div>
+                    <div className="absolute top-0 right-0 bottom-0 w-16 bg-gradient-to-l from-gray-50 to-transparent md:hidden pointer-events-none"></div>
+                </div>
+                 <div className="md:hidden text-center text-gray-500 mt-4">
+                    <i data-lucide="more-horizontal" className="h-8 w-8 mx-auto opacity-75"></i>
+                </div>
+            </div>
+        </section>
+    );
+};
+
+
+// --- From components/Features.tsx ---
+interface FeatureItemProps {
+    feature: Feature;
+}
+
+const FeatureItem: React.FC<FeatureItemProps> = ({ feature }) => (
+    <div className="flex flex-col items-center text-center p-6 bg-gray-800 rounded-lg shadow-md h-full border-2 border-gray-700 transition-all duration-300 md:hover:scale-105 md:hover:shadow-xl md:hover:border-yellow-500">
+        <i data-lucide={feature.icon} className="h-10 w-10 text-yellow-500 mb-4"></i>
+        <h4 className="font-bold text-lg text-white mb-1">{feature.title}</h4>
+        <p className="text-sm text-gray-300">{feature.description}</p>
+    </div>
+);
+
+const Features: React.FC = () => {
+    return (
+        <section id="diferenciais" className="bg-gray-900 py-12 md:py-16">
+            <div className="container mx-auto px-6 max-w-7xl">
+                <div className="relative">
+                    <div className="flex overflow-x-auto md:overflow-visible snap-x snap-mandatory gap-6 md:grid md:grid-cols-4 md:gap-8 pb-4 scrollbar-hide">
+                        {FEATURES.map((feature, index) => (
+                            <div key={index} className="flex-none snap-start w-1/2 sm:w-1/3 md:w-auto">
+                                <FeatureItem feature={feature} />
+                            </div>
+                        ))}
+                    </div>
+                    <div className="absolute top-0 right-0 bottom-0 w-16 bg-gradient-to-l from-gray-900 to-transparent md:hidden pointer-events-none"></div>
+                </div>
+                <div className="md:hidden text-center text-gray-400 mt-4">
+                    <i data-lucide="more-horizontal" className="h-8 w-8 mx-auto opacity-75"></i>
+                </div>
+            </div>
+        </section>
+    );
+};
+
+
+// --- From components/Hero.tsx ---
+const Hero: React.FC = () => {
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
+
+    const toggleMobileMenu = () => {
+        setIsMobileMenuOpen(!isMobileMenuOpen);
+    };
+
+    const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+        e.preventDefault();
+        const href = e.currentTarget.getAttribute('href');
+        if (!href) return;
+        const targetId = href.substring(1);
+        const element = document.getElementById(targetId);
+        if (element) {
+            element.scrollIntoView({ behavior: 'smooth' });
+        }
+        setIsMobileMenuOpen(false);
+    };
+
+    return (
+        <header id="inicio" className="relative text-white flex flex-col shadow-lg h-[85vh] min-h-[600px] max-h-[850px] overflow-hidden">
+            {/* Video Background for Desktop */}
+            <video
+                autoPlay
+                loop
+                muted
+                playsInline
+                className="absolute top-0 left-0 w-full h-full object-cover z-0 hidden md:block transform -scale-x-100"
+                poster="https://i.imgur.com/ldj9D35.jpeg" // Poster for loading/fallback
+            >
+                <source src="https://videos.pexels.com/video-files/3253457/3253457-hd_1920_1080_25fps.mp4" type="video/mp4" />
+                Your browser does not support the video tag.
+            </video>
+            
+            {/* Image Background for Mobile */}
+            <div 
+                className="absolute top-0 left-0 w-full h-full bg-cover bg-center z-0 md:hidden transform -scale-x-100" 
+                style={{ backgroundImage: "url('https://i.imgur.com/ldj9D35.jpeg')" }}
+            ></div>
+
+            {/* Overlay */}
+            <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-black/90 via-black/70 to-black/40 z-10"></div>
+            
+            {/* Wrapper for content, above the overlay */}
+            <div className="relative z-20 w-full h-full flex flex-col">
+                <nav className="w-full p-4">
+                    <div className="container mx-auto flex justify-between items-center max-w-7xl px-6 flex-wrap">
+                        <a href="#inicio" onClick={handleNavClick} className="text-xl md:text-2xl font-bold text-yellow-500 cursor-pointer">
+                           Emiliano Guindaste
+                        </a>
+                        
+                        <button
+                            id="mobile-menu-button"
+                            className="md:hidden p-2 rounded-md hover:bg-gray-800 focus:outline-none focus:bg-gray-800"
+                            onClick={toggleMobileMenu}
+                            aria-label="Toggle mobile menu"
+                            aria-expanded={isMobileMenuOpen}
+                            aria-controls="mobile-menu"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d={isMobileMenuOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16m-7 6h7"} />
+                            </svg>
+                        </button>
+
+                        <div className="hidden md:flex space-x-6">
+                            {NAV_LINKS.map(link => (
+                                <a key={link.href} href={link.href} onClick={handleNavClick} className="hover:text-yellow-400 transition-colors duration-200 cursor-pointer">{link.label}</a>
+                            ))}
+                        </div>
+
+                        <div id="mobile-menu" className={`${isMobileMenuOpen ? 'block' : 'hidden'} md:hidden w-full mt-4 bg-gray-900 bg-opacity-95 rounded-lg`}>
+                            {NAV_LINKS.map(link => (
+                                <a key={link.href} href={link.href} onClick={handleNavClick} className="block py-3 px-4 hover:bg-gray-800 rounded cursor-pointer">{link.label}</a>
+                            ))}
+                        </div>
+                    </div>
+                </nav>
+
+                <div className="container mx-auto px-6 max-w-7xl text-left flex-grow flex flex-col items-start justify-center">
+                    <div className="w-16 h-1 bg-yellow-500 mb-4 rounded"></div>
+                    
+                    <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight drop-shadow-lg leading-tight">
+                        Locação de Guindaste <br /> em Maceió e Região
+                    </h1>
+                    
+                    <p className="mt-4 md:mt-6 text-lg md:text-xl max-w-xl text-gray-200 drop-shadow">
+                        Soluções seguras e eficientes para içamento de cargas, montagens industriais e construção civil. Atendimento rápido e com operador qualificado.
+                    </p>
+
+                    <div className="mt-8 md:mt-10 flex flex-col sm:flex-row gap-4 items-start">
+                        <a href={WHATSAPP_LINK}
+                           target="_blank"
+                           rel="noopener noreferrer"
+                           className="inline-flex items-center justify-center px-6 py-3 md:px-8 md:py-4 bg-yellow-500 hover:bg-yellow-600 text-gray-900 text-base md:text-lg font-bold rounded-lg shadow-xl transition-all duration-300 transform hover:scale-105">
+                            <WhatsAppIcon className="w-6 h-6 md:w-7 md:h-7 mr-2 md:mr-3" />
+                            <span>Orçamento Rápido</span>
+                        </a>
+                         <a href="#servicos"
+                           onClick={handleNavClick}
+                           className="inline-flex items-center justify-center px-6 py-3 md:px-8 md:py-4 border-2 border-yellow-500 text-white text-base md:text-lg font-bold rounded-lg shadow-xl transition-all duration-300 hover:bg-yellow-500 hover:text-gray-900">
+                            <span>Ver Serviços</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </header>
+    );
+};
+
+
+// --- From App.tsx ---
+const App: React.FC = () => {
+    React.useEffect(() => {
+        // This script is loaded in index.html and finds all elements with `data-lucide`
+        // attributes and replaces them with SVG icons.
+        // It should be run after the initial render to ensure all components are mounted.
+        if (window.lucide) {
+            window.lucide.createIcons();
+        }
+    }, []);
+
+    return (
+        <>
+            <main>
+                <Hero />
+                <Services />
+                <Features />
+                <Gallery />
+                <FAQSection />
+                <CTA />
+            </main>
+            <Footer />
+            <FloatingWhatsAppButton />
+        </>
+    );
+};
+
+
+// --- From index.tsx (original) ---
+const rootElement = document.getElementById('root');
+if (!rootElement) {
+  throw new Error("Could not find root element to mount to");
+}
+
+// FIX: Use the imported ReactDOM to create the root and render the app, which also resolves the use of React.StrictMode.
+const root = ReactDOM.createRoot(rootElement);
+root.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
