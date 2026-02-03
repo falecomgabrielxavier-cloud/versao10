@@ -1,4 +1,5 @@
 
+
 // FIX: Import React and ReactDOM to use them as modules.
 import React from 'react';
 import ReactDOM from 'react-dom/client';
@@ -308,12 +309,6 @@ const Footer: React.FC = () => {
                                     <i data-lucide="phone" className="w-5 h-5 text-yellow-500"></i>
                                 </div>
                                 <span className="text-gray-400 font-medium pt-1">(82) 98868-6723</span>
-                            </li>
-                             <li className="flex items-center gap-3 group">
-                                <div className="p-2 bg-gray-800 rounded-lg group-hover:bg-yellow-500/10 transition-colors">
-                                    <i data-lucide="clock" className="w-5 h-5 text-yellow-500"></i>
-                                </div>
-                                <span className="text-gray-400 pt-1">Seg - Sáb: 08:00 - 18:00</span>
                             </li>
                          </ul>
                     </div>
